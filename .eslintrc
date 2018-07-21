@@ -6,6 +6,14 @@
   ],
   "globals": {
     "window": false,
-    "confirm": false
+    "self": false,
+    "document": false,
+    "Worker": false,
+    "postMessage": false,
+    "localStorage": false
+  },
+  "rules": {
+    "no-restricted-globals": 1,
+    "no-empty": 1
   }
 }

@@ -1,16 +1,17 @@
-define(() => {
-  const suits = ['spade', 'heart', 'club', 'diamond'];
+import $ from 'jquery';
 
-  let frag;
+const suits = ['spade', 'heart', 'club', 'diamond'];
+let frag;
 
-  const CardDisplay = function (dom) {
+class CardDisplay {
+  constructor(dom) {
     this.dom = $(dom);
     this.dom.on('click', () => {
-      this.onClick && this.onClick();
+      if (this.onClick) this.onClick();
     });
-  };
+  }
 
-  CardDisplay.prototype.adjustPos = function (pos) {
+  adjustPos = (pos) => {
     if (!pos.rotation) {
       pos.rotation = 0;
     }
@@ -21,22 +22,21 @@ define(() => {
       zIndex: 10 + pos.z,
       transform: `rotate(${pos.rotation}deg) translate3d(${pos.x}px, ${pos.y}px, ${pos.z}px) rotateY(${pos.rotateY}deg)`,
     });
-  };
+  }
 
-  CardDisplay.prototype.setSelectable = function (yes) {
+  setSelectable = (yes) => {
     if (yes) {
       this.dom.addClass('movable');
     } else {
       this.dom.removeClass('movable');
     }
-  };
+  }
 
-  CardDisplay.prototype.isSelectable = function () {
-    return this.dom.is('.movable');
-  };
+  isSelectable = () => this.dom.is('.movable')
+}
 
-
-  const PlayerDisplay = function (id, name, human) {
+class PlayerDisplay {
+  constructor(id, name) {
     this.id = id;
     this.display = document.createElement('div');
     this.display.className = `info-board board-${id}`;
@@ -57,28 +57,28 @@ define(() => {
     frag.appendChild(this.display);
 
     this.rank = null;
-  };
+  }
 
-  PlayerDisplay.prototype.setName = function (name) {
+  setName = (name) => {
     this.nametext.innerHTML = name;
-  };
+  }
 
 
-  PlayerDisplay.prototype.setHuman = function (yes) {
+  setHuman = (yes) => {
     if (yes) {
       this.display.className += ' human';
     }
-  };
+  }
 
-  PlayerDisplay.prototype.setHighlight = function (yes) {
+  setHighlight = (yes) => {
     if (yes) {
       $(this.display).addClass('highlight');
     } else {
       $(this.display).removeClass('highlight');
     }
-  };
+  }
 
-  PlayerDisplay.prototype.adjustPos = function () {
+  adjustPos = () => {
     const d = $(this.display);
     if (this.rank === null) {
       const adjust = this.finaltext.classList.contains('show') ? 55 : 0;
@@ -100,67 +100,67 @@ define(() => {
         transform: `translateY(${(1.2 * d.height()) * (this.rank - 2)}px)`,
       }).addClass('table');
     }
-  };
+  }
 
-  PlayerDisplay.prototype.setScoreText = function (text) {
+  setScoreText = (text) => {
     this.scoretext.innerHTML = text;
-  };
+  }
 
-  PlayerDisplay.prototype.setFinalText = function (text) {
+  setFinalText = (text) => {
     this.finaltext.innerHTML = text;
-  };
+  }
 
-  PlayerDisplay.prototype.highlight = function () {
+  highlight = () => {
     const b = this.scoretext.classList;
     b.add('highlight');
     setTimeout(() => {
       b.remove('highlight');
     }, 100);
-  };
+  }
+}
 
-  return {
-    fragmentToDom(dom) {
-      if (frag) {
-        dom.appendChild(frag);
-        frag = null;
-      }
-    },
-    createPlayerDisplay(id, name) {
-      return new PlayerDisplay(id, name);
-    },
-    createCardDisplay(numtext, suit) {
-      if (!frag) {
-        frag = document.createDocumentFragment();
-      }
-      const display = document.createElement('div');
-      display.className = 'card flipped';
-      $(display).css({
-        transform: 'rotateY(180deg)',
-      });
+export default {
+  fragmentToDom(dom) {
+    if (frag) {
+      dom.appendChild(frag);
+      frag = null;
+    }
+  },
+  createPlayerDisplay(id, name) {
+    return new PlayerDisplay(id, name);
+  },
+  createCardDisplay(numtext, suit) {
+    if (!frag) {
+      frag = document.createDocumentFragment();
+    }
+    const display = document.createElement('div');
+    display.className = 'card flipped';
+    $(display).css({
+      transform: 'rotateY(180deg)',
+    });
 
-      const numText = document.createElement('div');
-      numText.className = 'num';
-      numText.innerHTML = numtext;
+    const numText = document.createElement('div');
+    numText.className = 'num';
+    numText.innerHTML = numtext;
 
-      const front = document.createElement('div');
-      front.className = 'front';
-      front.appendChild(numText);
-      display.classList.add(suits[suit]);
+    const front = document.createElement('div');
+    front.className = 'front';
+    front.appendChild(numText);
+    display.classList.add(suits[suit]);
 
-      const icon = document.createElement('div');
-      icon.className = 'icon';
-      front.appendChild(icon);
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    front.appendChild(icon);
 
-      display.appendChild(front);
+    display.appendChild(front);
 
-      const back = document.createElement('div');
-      back.className = 'back';
+    const back = document.createElement('div');
+    back.className = 'back';
 
-      display.appendChild(back);
+    display.appendChild(back);
 
-      frag.appendChild(display);
+    frag.appendChild(display);
 
-      return new CardDisplay(display);
-    },
-  };
-});
+    return new CardDisplay(display);
+  },
+};

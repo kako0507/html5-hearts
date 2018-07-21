@@ -1,4 +1,4 @@
-define(() => ({
+export default {
   width: 500,
   height: 500,
   cardSep: 30,
@@ -13,4 +13,4 @@ define(() => ({
     this.width = this.region.offsetWidth;
     this.height = this.region.offsetHeight;
   },
-}));
+};
