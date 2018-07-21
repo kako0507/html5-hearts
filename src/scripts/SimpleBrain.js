@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Brain from './Brain';
 
 class SimpleBrain extends Brain {
@@ -6,7 +5,7 @@ class SimpleBrain extends Brain {
     let suit = -1;
     let maxNum = -1;
 
-    return $.Deferred().resolve((() => {
+    return Promise.resolve((() => {
       if (board.length) {
         ([{ suit }] = board);
         maxNum = board.reduce((prev, cur) => {

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Player from './Player';
 import ui from './ui';
 
@@ -26,28 +25,28 @@ class Human extends Player {
     if (validCards.length === 1 && validCards[0].id === 26) {
       ui.showMessage('Please start with 2 of Clubs.');
     }
-    const d = $.Deferred();
-    ui.buttonClickOnce(() => {
-      ui.hideMessage();
-      ui.hideButton();
-      validCards.forEach((c) => {
-        c.display.setSelectable(false);
+    return new Promise((resolve) => {
+      ui.buttonClickOnce(() => {
+        ui.hideMessage();
+        ui.hideButton();
+        validCards.forEach((c) => {
+          c.display.setSelectable(false);
+        });
+        resolve(this.row.getSelected()[0]);
       });
-      d.resolve(this.row.getSelected()[0]);
     });
-    return d;
   }
 
   confirmTransfer = () => {
     ui.showButton('Confirm');
     ui.hideArrow();
     ui.hideMessage();
-    const d = $.Deferred();
-    ui.buttonClickOnce(() => {
-      this.doneTransfer();
-      d.resolve();
+    return new Promise((resolve) => {
+      ui.buttonClickOnce(() => {
+        this.doneTransfer();
+        resolve();
+      });
     });
-    return d;
   }
 
   doneTransfer = () => {
@@ -62,17 +61,17 @@ class Human extends Player {
       c.display.setSelectable(true);
     });
     this.row.maxShift = 3;
-    const d = $.Deferred();
-    ui.arrowClickOnce(() => {
-      this.selected = this.row.getSelected();
-      this.row.maxShift = 1;
-      this.row.cards.forEach((c) => {
-        c.display.setSelectable(false);
-      });
-      d.resolve();
-    });
 
-    return d;
+    return new Promise((resolve) => {
+      ui.arrowClickOnce(() => {
+        this.selected = this.row.getSelected();
+        this.row.maxShift = 1;
+        this.row.cards.forEach((c) => {
+          c.display.setSelectable(false);
+        });
+        resolve();
+      });
+    });
   }
 
   rowSelected = () => {

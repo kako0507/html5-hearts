@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Player from './Player';
 
 class Ai extends Player {
@@ -24,7 +23,7 @@ class Ai extends Player {
       cards.push(this.row.cards[selected[i]]);
     }
     this.selected = cards;
-    return $.Deferred().resolve();
+    return Promise.resolve();
   }
 
   confirmTransfer = () => this.brain.confirmCards()

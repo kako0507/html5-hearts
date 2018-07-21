@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import ui from './ui';
 import Human from './Human';
 import Ai from './Ai';
@@ -22,12 +21,12 @@ let played = 0;
 let heartBroken = false;
 let nextTimer = 0;
 
-const waitDefer = (time) => {
-  const d = $.Deferred();
-  setTimeout(() => {
-    d.resolve();
-  }, time);
-  return d;
+const waitPromise = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
 };
 
 const initBrains = () => {
@@ -49,11 +48,11 @@ const initBrains = () => {
     }
   }
 
-  return $.when(
+  return Promise.all([
     players[1].brain.init(),
     players[2].brain.init(),
     players[3].brain.init(),
-  );
+  ]);
 };
 
 const informCardOut = (player, card) => {
@@ -95,17 +94,17 @@ export default {
   },
   next() {
     console.log(status, 'next');
-    if (status == 'confirming') {
+    if (status === 'confirming') {
       currentPlay = board.cards[26].parent.playedBy.id;
       played = 0;
-    } else if (status == 'playing') {
+    } else if (status === 'playing') {
       currentPlay = (currentPlay + 1) % 4;
       played += 1;
     }
     if (played == 4) {
       status = 'endRound';
       played = 0;
-    } else if (status == 'endRound' && players[0].row.cards.length === 0) {
+    } else if (status === 'endRound' && players[0].row.cards.length === 0) {
       status = 'end';
     } else {
       status = ({
@@ -139,20 +138,20 @@ export default {
         board.init();
         heartBroken = false;
         board.shuffleDeck();
-        initBrains().done(this.next.bind(this));
+        initBrains().then(this.next.bind(this));
       },
       distribute() {
-        const self = this;
-        board.distribute(players).done(() => {
+        board.distribute(players).then(() => {
           players.forEach((p) => {
             p.row.sort();
           });
-          self.next();
+          this.next();
         });
       },
       start() {
         rounds += 1;
-        $.when(...players.map(p => p.prepareTransfer(rounds % 3))).done(this.next.bind(this));
+        Promise.all(players.map(p => p.prepareTransfer(rounds % 3)))
+          .then(this.next.bind(this));
       },
       passing() {
         for (let i = 0; i < 4; i += 1) {
@@ -164,19 +163,23 @@ export default {
         players.forEach((r) => {
           r.row.sort();
         });
-        $.when(...players.map(p => p.confirmTransfer())).done(this.next.bind(this));
+        Promise.all(players.map(p => p.confirmTransfer()))
+          .then(this.next.bind(this));
       },
       playing() {
         players[currentPlay].setActive(true);
-        $.when(players[currentPlay].decide(
-          rules.getValidCards(players[currentPlay].row.cards,
-            board.desk.cards[0] ? board.desk.cards[0].suit : -1,
-            heartBroken),
-          board.desk.cards,
-          board.desk.players,
-          players.map(p => p.getScore()),
-        ), waitDefer(200))
-          .done((card) => {
+        Promise.all([
+          players[currentPlay].decide(
+            rules.getValidCards(players[currentPlay].row.cards,
+              board.desk.cards[0] ? board.desk.cards[0].suit : -1,
+              heartBroken),
+            board.desk.cards,
+            board.desk.players,
+            players.map(p => p.getScore()),
+          ),
+          waitPromise(200),
+        ])
+          .then(([card]) => {
             players[currentPlay].setActive(false);
             card.parent.out(card);
             board.desk.addCard(card, players[currentPlay]);

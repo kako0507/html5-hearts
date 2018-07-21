@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Brain from './Brain';
 import Worker from './brain.worker';
 
@@ -6,11 +5,14 @@ class AsyncBrain extends Brain {
   constructor(user, brainName, options) {
     super(user);
     this.worker = new Worker();
-    this.initDefer = $.Deferred();
+    this.initPromise = new Promise((resolve, reject) => {
+      this.initPromiseResolve = resolve;
+      this.initPromiseReject = reject;
+    });
     this.worker.onmessage = (e) => {
       if (e.data.type === 'decision') {
-        this.curDefer.resolve(e.data.result);
-        this.curDefer = null;
+        this.curPromiseResolve(e.data.result);
+        this.curPromise = null;
       } else if (e.data.type === 'loaded') {
         this.worker.postMessage({
           type: 'ini',
@@ -19,20 +21,20 @@ class AsyncBrain extends Brain {
           options,
         });
       } else if (e.data.type === 'ini-ed') {
-        this.initDefer.resolve();
+        this.initPromiseResolve();
       } else if (e.data.type === 'confirmed') {
-        this.confirmDefer.resolve();
+        this.confirmPromiseResolve();
       }
     };
   }
 
   terminate = () => {
-    if (this.initDefer) this.initDefer.reject();
-    if (this.curDefer) this.curDefer.reject();
-    if (this.confirmDefer) this.confirmDefer.reject();
+    if (this.initPromise) this.initPromiseReject();
+    if (this.curPromise) this.curPromiseReject();
+    if (this.confirmPromise) this.confirmPromiseReject();
   }
 
-  init = () => this.initDefer
+  init = () => this.initPromise
 
   watch = (info) => {
     const tinfo = {
@@ -59,8 +61,11 @@ class AsyncBrain extends Brain {
       type: 'confirm',
       cards: this.user.row.cards.map(c => c.id),
     });
-    this.confirmDefer = $.Deferred();
-    return this.confirmDefer;
+    this.confirmPromise = new Promise((resolve, reject) => {
+      this.confirmPromiseResolve = resolve;
+      this.confirmPromiseReject = reject;
+    });
+    return this.confirmPromise;
   }
 
   decide = (validCards, boardCards, boardPlayers, scores) => {
@@ -73,8 +78,11 @@ class AsyncBrain extends Brain {
         scores,
       },
     });
-    this.curDefer = $.Deferred();
-    return this.curDefer;
+    this.curPromise = new Promise((resolve, reject) => {
+      this.curPromiseResolve = resolve;
+      this.curPromiseReject = reject;
+    });
+    return this.curPromise;
   }
 }
 

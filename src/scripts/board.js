@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import $ from 'jquery';
 import Card from './Card';
 import layout from './layout';
 
@@ -25,21 +24,21 @@ export default {
   },
   distribute(players) {
     let curI = 0;
-    const d = $.Deferred();
-    function move() {
-      if (curI === cards.length) {
-        setTimeout(() => {
-          d.resolve();
-        }, 200);
-        return;
+    return new Promise((resolve) => {
+      function move() {
+        if (curI === cards.length) {
+          setTimeout(() => {
+            resolve();
+          }, 200);
+          return;
+        }
+        players[curI % 4].row.addCard(cards[carddeck[curI]]);
+        players[curI % 4].row.adjustPos();
+        curI += 1;
+        setTimeout(move, 10);
       }
-      players[curI % 4].row.addCard(cards[carddeck[curI]]);
-      players[curI % 4].row.adjustPos();
-      curI += 1;
-      setTimeout(move, 10);
-    }
-    setTimeout(() => { move(); }, 300);
-    return d;
+      setTimeout(move, 300);
+    });
   },
   getPosFor(index) {
     return {
