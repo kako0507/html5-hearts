@@ -82,7 +82,8 @@ class PomDPSimulator {
     if (!cards.length) return null;
 
     const vc = this._getValidCards(cards);
-    let suit = -1; let maxNum = -1;
+    let suit = -1;
+    let maxNum = -1;
     const { board } = this.state;
 
     if (board.length) {
@@ -139,8 +140,8 @@ class PomDPSimulator {
       if (toPlay === null) break;
       this._playCard(toPlay);
     }
-    let moonShooter = -1; let
-      outputScore = oriScore - this.state.scores[this.playerId];
+    let moonShooter = -1;
+    let outputScore = oriScore - this.state.scores[this.playerId];
     this.state.scores.forEach((score, index) => {
       if (score === 26) {
         moonShooter = index;

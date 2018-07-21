@@ -11,8 +11,8 @@ class Ai extends Player {
   }
 
   prepareTransfer = () => {
-    const selected = []; const
-      cards = [];
+    const selected = [];
+    const cards = [];
     while (selected.length < 3) {
       const s = Math.floor(Math.random() * this.row.cards.length);
       if (selected.indexOf(s) === -1) {

@@ -206,8 +206,9 @@ class PomDPBrain extends Brain {
       }
       curBoard.push(ob);
       if (curBoard.length === 4) {
-        let maxNum = -1; let maxPlayer = 0; let
-          boardScore = 0;
+        let maxNum = -1;
+        let maxPlayer = 0;
+        let boardScore = 0;
         for (let i = 0; i < 4; i += 1) {
           const bcard = cardsInfo[curBoard[i] % 100];
           if (bcard.suit === curSuit && bcard.num > maxNum) {

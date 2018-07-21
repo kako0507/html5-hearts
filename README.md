@@ -2,6 +2,30 @@
 
 You can try the game at http://hearts.yjyao.com/
 
+# Install 3rd party libraries
+
+  ```
+  yarn/npm install
+  ```
+
+# Build bundle files
+
+  ```
+  # Minimizing the bundle files for production
+  yarn/npm run build
+  # Generating source map for develoment
+  yarn/npm run build-dev
+  ```
+
+# Start Koa web server
+
+  ```
+  # Using another HTTP server (e.g. Nginx) to serve static file
+  yarn/npm run start
+  # Using Koa to serve static file
+  yarn/npm run start-dev
+  ```
+
 # AI
 
 The `Ai.js` class can use various `Brains` to make decision.
@@ -14,5 +38,5 @@ The `Ai.js` class can use various `Brains` to make decision.
 
 # TODO
 
-1. Port `McBrain` and `PomDPBrain` to `C++`, which can be compiled to `asm.js` for better performance
-1. Multi-player support
+1. Use WebSocket to support Multi-player
+2. Move control logic from client to server
