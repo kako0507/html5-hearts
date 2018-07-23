@@ -1,0 +1,129 @@
+backface-visibility() {
+  -webkit-backface-visibility: arguments;
+  -moz-backface-visibility: arguments;
+  -ms-backface-visibility: arguments;
+  -o-backface-visibility: arguments;
+  backface-visibility: arguments;
+}
+
+transform-style() {
+  -webkit-transform-style: arguments;
+  -moz-transform-style: arguments;
+  -ms-transform-style: arguments;
+  -o-transform-style: arguments;
+  transform-style: arguments;
+}
+
+transform() {
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+
+.card {
+  width:85px;
+  height:130px;
+  border-radius:8px;
+  position:absolute;
+  margin-left: -42px;
+  margin-top: -65px;
+  top: 50%;
+  left: 50%;
+  -webkit-transition: -webkit-transform 0.2s, box-shadow 0.2s;
+  -moz-transition: -moz-transform 0.2s, box-shadow 0.2s;
+  -ms-transition: -ms-transform 0.2s, box-shadow 0.2s;
+  -o-transition: -o-transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 1000;
+  cursor:default;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  transform-style: preserve-3d;
+
+  >.front, >.back {
+    border-radius: 8px;
+    position:absolute;
+    top:0;
+    left:0;
+    width:85px;
+    height:130px;
+    background-color:white;
+    backface-visibility: hidden;
+  }
+
+  >.front {
+    background-color:white;
+    background-repeat:no-repeat;
+    background-position:50% 75%;
+    background-size:70px;
+  }
+
+  >.back {
+    background-image:url('./flip.png');
+    background-repeat:repeat;
+    box-sizing: border-box;
+    moz-box-sizing: border-box;
+    border: 6px solid white;
+    transform: rotateY(180deg);
+  }
+
+  &.heart, &.diamond {
+    color:red;
+  }
+
+  &.noShadow .front, &.noShadow .back {
+    box-shadow:none;
+    border:1px solid #777777;
+  }
+
+  &.movable .front {
+    box-shadow: 0 0 25px lightblue;
+  }
+
+  &.movable:hover .front {
+    box-shadow:0 0 20px 5px lightblue;
+  }
+
+  &.noShadow .front, &.noShadow .back {
+    box-shadow:none;
+  }
+
+  &.heart .front, &.heart .icon {
+    background-image:url('./heart.png');
+  }
+
+  &.club .front, &.club .icon {
+    background-image:url('./club.png');
+  }
+
+  &.spade .front, &.spade .icon {
+    background-image:url('./spade.png');
+  }
+
+  &.diamond .front, &.diamond .icon {
+    background-image:url('./diamond.png');
+  }
+
+  .icon {
+    background-size:contain;
+    background-position:center;
+    background-repeat:no-repeat;
+    width:15px;
+    height:15px;
+    position:absolute;
+    left:4px;
+    top:19px;
+    backface-visibility: hidden;
+  }
+
+  .num {
+    position:absolute;
+    left:7px;
+    top:4px;
+    font-size: 15px;
+    font-family: Arial;
+    backface-visibility: hidden;
+  }
+}

@@ -1,3 +1,4 @@
+/* eslint no-extraneous-dependencies: 0 */
 const path = require('path');
 const Koa = require('koa');
 const views = require('koa-views');
@@ -13,7 +14,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // setup views, appending .ejs
 // when no extname is given to render()
-app.use(views(path.join(__dirname, '/views'), { extension: 'ejs' }));
+app.use(views(path.join(__dirname), { extension: 'ejs' }));
 
 app.use(async (ctx) => {
   await ctx.render('index');

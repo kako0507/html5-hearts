@@ -1,7 +1,19 @@
 {
   "presets": [
-    "env",
-    "stage-0"
+    ["env", {
+      "debug": false,
+      "modules": "commonjs",
+      "targets": {
+        "browsers": [
+          "Chrome >= 49",
+          "Explorer 11"
+        ],
+        "node": "current"
+      },
+      "useBuiltIns": true
+    }],
+    "stage-0",
+    "react"
   ],
   "plugins": [
     "lodash"
